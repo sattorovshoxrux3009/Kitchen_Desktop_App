@@ -36,14 +36,14 @@
         margin-bottom: 20px;
       }
       .btn {
-        min-width: 200px;
+        min-width: 250px;
         padding: 10px 20px;
         margin: 10px;
         font-size: 18px;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 24px;
+        font-size: 32px;
       }
       .btn:active {
         transform: scale(0.96);
@@ -60,13 +60,13 @@
       }
       #name {
         margin: 0;
-        font-size: 32px;
+        font-size: 48px;
       }
       #status {
-        font-size: 24px;
+        font-size: 32px;
       }
       #message {
-        font-size: 48px;
+        font-size: 64px;
       }
       .fade-in {
         opacity: 0;
@@ -119,6 +119,12 @@
           opacity: 0;
         }
       }
+      #lottie {
+        width: 400px;
+        height: 400px;
+        margin: 0 auto;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -126,6 +132,7 @@
     <div id="toast"></div>
 
     <div id="container">
+      <div id="lottie"></div>
       <h1 id="message">Kameraga yuzingizni tuting</h1>
       <img id="photo" style="display: none" />
       <h2 id="name"></h2>
@@ -133,8 +140,9 @@
       <div id="buttons"></div>
     </div>
 
+    <script src="./lotite.js"></script>
     <script>
-      const baseUrl = "http://localhost:8444";
+      const baseUrl = "http://172.25.24.220:8444";
       const printerUrl = "http://localhost:7001";
       const animationDuration = 200;
 
@@ -147,6 +155,8 @@
       let timeoutId = null;
       let ws = null;
       let reconnectInterval = null;
+      let animation = null;
+      let isAnimate = false;
 
       function fadeOutAndHide(el) {
         el.classList.remove("fade-in");
@@ -162,9 +172,16 @@
         fadeOutAndHide(nameEl);
         fadeOutAndHide(statusEl);
         fadeOutAndHide(buttonsEl);
-        setTimeout(() => {
-          messageEl.innerText = "Kameraga yuzingizni tuting";
-        }, animationDuration);
+        if (isAnimate == true) {
+          setTimeout(() => {
+            messageEl.innerText = "Kameraga yuzingizni tuting";
+          }, animationDuration + 1600);
+        } else {
+          setTimeout(() => {
+            messageEl.innerText = "Kameraga yuzingizni tuting";
+          }, animationDuration);
+        }
+
         if (timeoutId) clearTimeout(timeoutId);
       }
 
@@ -221,6 +238,32 @@
           printBtn.innerText = "Talon chop etish";
           printBtn.className = "btn btn-print";
           printBtn.onclick = () => {
+            isAnimate = true;
+            clearScreen();
+            setTimeout(() => {
+              const container = document.getElementById("lottie");
+              container.style.display = "block";
+
+              if (!animation) {
+                // Agar hali yuklanmagan bo‘lsa, yuklaymiz
+                animation = lottie.loadAnimation({
+                  container,
+                  renderer: "svg",
+                  loop: false,
+                  autoplay: true, // Qo‘lda boshqaramiz
+                  path: "./okey.json",
+                });
+
+                animation.setSpeed(3.0);
+
+                animation.addEventListener("complete", () => {
+                  container.style.display = "none";
+                });
+              } else {
+                animation.goToAndPlay(0); // Boshlanishdan qayta o‘ynatish
+              }
+              isAnimate = false;
+            }, 200);
             fetch(`${printerUrl}/print`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
