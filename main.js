@@ -10,6 +10,7 @@ function createWindow() {
     autoHideMenuBar: true, // Menyu barni yashiradi
     webPreferences: {
       contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 

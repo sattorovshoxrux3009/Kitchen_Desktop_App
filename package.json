@@ -12,7 +12,10 @@
     "appId": "com.example.kitchenapp",
     "productName": "KitchenApp",
     "files": [
-      "**/*"
+      "index.html",
+      "main.js",
+      "preload.js",
+      "build/**/*"
     ],
     "directories": {
       "output": "dist"

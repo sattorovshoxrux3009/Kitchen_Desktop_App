@@ -8,11 +8,15 @@
         box-sizing: border-box;
       }
       body {
+        /* background-image: url(./build/image.jpg);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover; */
         margin: 0;
         padding: 0;
         font-family: sans-serif;
         background-color: #f9f9f9;
-        color: #111;
+        color: #312e2e;
         width: 100vw;
         height: 100vh;
         overflow: hidden;
@@ -36,14 +40,18 @@
         margin-bottom: 20px;
       }
       .btn {
-        min-width: 250px;
-        padding: 10px 20px;
+        min-width: 280px;
+        padding: 15px 20px;
         margin: 10px;
-        font-size: 18px;
+        font-size: 28px;
         border: none;
         border-radius: 8px;
         cursor: pointer;
         font-size: 32px;
+      }
+      #buttons {
+        display: flex;
+        gap: 150px;
       }
       .btn:active {
         transform: scale(0.96);
@@ -55,6 +63,7 @@
         color: white;
       }
       .btn-print {
+        margin-left: 70px;
         background-color: #2ecc71;
         color: white;
       }
@@ -85,7 +94,7 @@
         color: white;
         padding: 12px 24px;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 32px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         opacity: 0;
         pointer-events: none;
@@ -132,12 +141,15 @@
     <div id="toast"></div>
 
     <div id="container">
-      <div id="lottie"></div>
-      <h1 id="message">Kameraga yuzingizni tuting</h1>
+      <div class="lotite-container">
+        <div id="lottie"></div>
+      </div>
+
+      <h1 id="message">Kameraga yuzingizni qarating</h1>
       <img id="photo" style="display: none" />
       <h2 id="name"></h2>
       <p id="status"></p>
-      <div id="buttons"></div>
+      <div id="buttons" style="display: block"></div>
     </div>
 
     <script src="./lotite.js"></script>
@@ -174,11 +186,11 @@
         fadeOutAndHide(buttonsEl);
         if (isAnimate == true) {
           setTimeout(() => {
-            messageEl.innerText = "Kameraga yuzingizni tuting";
+            messageEl.innerText = "Kameraga yuzingizni qarating";
           }, animationDuration + 1600);
         } else {
           setTimeout(() => {
-            messageEl.innerText = "Kameraga yuzingizni tuting";
+            messageEl.innerText = "Kameraga yuzingizni qarating";
           }, animationDuration);
         }
 
@@ -223,15 +235,18 @@
         buttonsEl.innerHTML = "";
         showWithFade(buttonsEl);
 
-        const clearBtn = document.createElement("button");
-        clearBtn.innerText = "Tozalash";
-        clearBtn.className = "btn btn-clear";
-        clearBtn.onclick = clearScreen;
-        buttonsEl.appendChild(clearBtn);
-
         if (employee.checked_today) {
           statusEl.innerText = "Siz bugun talon olgansiz";
+          setTimeout(() => {
+            clearScreen();
+          }, 3000);
         } else {
+          const clearBtn = document.createElement("button");
+          clearBtn.innerText = "Tozalash";
+          clearBtn.className = "btn btn-clear";
+          clearBtn.onclick = clearScreen;
+          buttonsEl.appendChild(clearBtn);
+
           statusEl.innerText =
             "Siz bugun talon olmagansiz, talon olishingiz mumkin";
           const printBtn = document.createElement("button");
@@ -244,6 +259,8 @@
               const container = document.getElementById("lottie");
               container.style.display = "block";
 
+              nameEl.innerText = "Muvaffaqiyatli yakunlandi!";
+              nameEl.style.display = "block";
               if (!animation) {
                 // Agar hali yuklanmagan bo‘lsa, yuklaymiz
                 animation = lottie.loadAnimation({
@@ -253,15 +270,16 @@
                   autoplay: true, // Qo‘lda boshqaramiz
                   path: "./okey.json",
                 });
-
                 animation.setSpeed(3.0);
-
                 animation.addEventListener("complete", () => {
                   container.style.display = "none";
                 });
               } else {
                 animation.goToAndPlay(0); // Boshlanishdan qayta o‘ynatish
               }
+              setTimeout(() => {
+                nameEl.style.display = "none";
+              }, 1300);
               isAnimate = false;
             }, 200);
             fetch(`${printerUrl}/print`, {
@@ -341,7 +359,18 @@
           ws.close();
         };
       }
-
+      window.addEventListener("DOMContentLoaded", () => {
+        // contextBridge orqali kelgan qiymat
+        const bgPath = window.electronAPI?.backgroundImagePath;
+        if (bgPath) {
+          document.body.style.backgroundImage = `url('${bgPath}')`;
+          document.body.style.backgroundRepeat = "no-repeat";
+          document.body.style.backgroundPosition = "center center";
+          document.body.style.backgroundSize = "cover";
+        } else {
+          console.error("Background path yo'q!");
+        }
+      });
       clearScreen();
       connectWebSocket();
     </script>
