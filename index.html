@@ -173,7 +173,7 @@
     <div id="toast"></div>
     <h1 id="message">
       Kameraga yuzingizni qarating <br />
-      Повернитесь лицом к камере.
+      Вы должны показать свое лицо камере
     </h1>
     <div class="lotite-container">
       <div id="lottie"></div>
@@ -249,14 +249,14 @@
             messageEl.innerHTML =
               "Kameraga yuzingizni qarating" +
               "<br />" +
-              "Повернитесь лицом к камере.";
+              "Вы должны показать свое лицо камере";
           }, animationDuration + 1600);
         } else {
           setTimeout(() => {
             messageEl.innerHTML =
               "Kameraga yuzingizni qarating" +
               "<br />" + // <-- string ko‘rinishida
-              "Повернитесь лицом к камере.";
+              "Вы должны показать свое лицо камере";
           }, animationDuration);
         }
 
@@ -346,16 +346,6 @@
                   body: `Vaqt: ${new Date(
                     time.replace(" ", "T")
                   ).toLocaleString("uz-UZ")}`,
-                  font: "normal",
-                },
-                {
-                  type: "qrCode",
-                  align: "center",
-                  body: `employee_id=${employee?.employee_id}&turniket_id=${
-                    employee?.turniket_id
-                  },time=${new Date(time.replace(" ", "T"))
-                    .toLocaleString("uz-UZ")
-                    .replace(", ", ",")}`,
                   font: "normal",
                 },
               ]),
@@ -461,6 +451,7 @@
           ws.close();
         };
       }
+
       window.addEventListener("DOMContentLoaded", () => {
         // contextBridge orqali kelgan qiymat
         const bgPath = window.electronAPI?.backgroundImagePath;
